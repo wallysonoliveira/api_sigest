@@ -1,0 +1,1060 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model icms_ajustes {
+  Id              Int      @id @default(autoincrement())
+  idcidade        Int?
+  uf              String?  @db.VarChar(2)
+  va_normais      Decimal? @db.Decimal(20, 2)
+  va_subst        Decimal? @db.Decimal(20, 2)
+  va_simples      Decimal? @db.Decimal(20, 2)
+  va_totais       Decimal? @db.Decimal(20, 2)
+  va_normais_perc Decimal? @db.Decimal(5, 2)
+  va_subst_perc   Decimal? @db.Decimal(5, 2)
+  va_simples_perc Decimal? @db.Decimal(5, 2)
+  va_totais_perc  Decimal? @db.Decimal(50, 2)
+  ano             Int?
+}
+
+model icms_api {
+  Id     Int     @id @default(autoincrement())
+  titulo String? @db.VarChar(255)
+}
+
+model icms_bolao {
+  id                       Int      @id @default(autoincrement()) @db.UnsignedInt
+  ano                      Int?     @default(0) @db.UnsignedInt
+  total_valor_previsto     Decimal? @db.Decimal(20, 2)
+  uf                       String?  @db.VarChar(2)
+  total_valor_previsto_mes Decimal? @db.Decimal(20, 2)
+}
+
+model icms_bolao_fpm {
+  Id                    Int       @id @default(autoincrement())
+  ano                   Int?
+  valor_mes_ipi         Decimal?  @db.Decimal(20, 2)
+  valor_mes_ir          Decimal?  @db.Decimal(20, 2)
+  mes                   Int?
+  decendio              String?   @db.VarChar(1)
+  valor_mes_irpf        Decimal?  @db.Decimal(20, 2)
+  valor_mes_irpj        Decimal?  @db.Decimal(20, 2)
+  valor_mes_irrf        Decimal?  @db.Decimal(20, 2)
+  valor_mes_multa_ir    Decimal?  @db.Decimal(20, 2)
+  excluido              String?   @db.VarChar(1)
+  data_exclusao         DateTime? @db.Date
+  valor_mes_liquido_ipi Decimal?  @db.Decimal(20, 2)
+  valor_mes_multa_ipi   Decimal?  @db.Decimal(20, 2)
+}
+
+model icms_cfop {
+  id                Int     @id @default(0) @db.UnsignedInt
+  descricao         String? @db.VarChar(255)
+  incide            String? @db.Char(1)
+  contrapartida     Int?    @db.UnsignedInt
+  descricaocompleta String? @db.LongText
+  incide_sp         String? @db.Char(1)
+  transporte        String? @db.VarChar(1)
+  energia           String? @db.VarChar(1)
+  transporte_ant    String? @db.VarChar(1)
+  outras_saidas     String? @db.VarChar(1)
+}
+
+model icms_cfop_uf {
+  Id            Int     @default(autoincrement())
+  uf            String  @default("") @db.VarChar(2)
+  descricao     String? @db.VarChar(255)
+  incide        String? @db.VarChar(1)
+  transporte    String? @db.VarChar(1)
+  energia       String? @db.VarChar(1)
+  outras_saidas String? @db.VarChar(1)
+  faturamento   String? @db.VarChar(1)
+  contrapartida Int?
+
+  @@id([Id, uf])
+}
+
+model icms_cidades {
+  id                       Int     @default(autoincrement()) @db.UnsignedInt
+  descricao                String? @db.VarChar(40)
+  uf                       String  @default("") @db.Char(2)
+  codigo_remover           String? @db.VarChar(20)
+  descricao_acento_remover String? @db.VarChar(40)
+  descricao_ibge_remover   String? @db.VarChar(100)
+  descricao_idh_remover    String? @db.VarChar(100)
+  codigo_ibge              String? @db.VarChar(10)
+  existente_remover        String? @db.VarChar(3)
+  situacao                 String? @db.VarChar(1)
+  codigo_cidade_uf         String? @db.VarChar(5)
+
+  @@id([id, uf])
+}
+
+model icms_cidadesx {
+  id               Int     @default(autoincrement()) @db.UnsignedInt
+  descricao        String? @db.VarChar(40)
+  uf               String  @default("") @db.Char(2)
+  codigo           String? @db.VarChar(20)
+  descricao_acento String? @db.VarChar(40)
+  descricao_ibge   String? @db.VarChar(100)
+  descricao_idh    String? @db.VarChar(100)
+  codigo_ibge      String? @db.VarChar(10)
+  existente        String? @db.VarChar(1)
+
+  @@id([id, uf])
+}
+
+model icms_cnae {
+  id                  String?  @default("0") @db.VarChar(7)
+  descricao           String?  @db.VarChar(255)
+  codigocnaegerencial Int?     @db.UnsignedInt
+  novo                String?  @db.VarChar(1)
+  secao               String?  @db.VarChar(10)
+  divisao             String?  @db.VarChar(10)
+  grupo               String?  @db.VarChar(10)
+  classe              String?  @db.VarChar(10)
+  subclasse           String?  @db.VarChar(10)
+  chave               String   @id @default("") @db.VarChar(45)
+  aliquota            Decimal? @db.Decimal(5, 2)
+}
+
+model icms_compensacaofinanceira {
+  Id             Int      @id @default(autoincrement())
+  idicms_cidades Int?
+  ano            Int?
+  mes            Int?
+  valor          Decimal? @db.Decimal(20, 2)
+}
+
+model icms_componentes {
+  Id         Int     @id @default(autoincrement())
+  componente String? @db.VarChar(20)
+  descricao  String? @db.VarChar(255)
+  codigo     String? @db.VarChar(20)
+  nivel      String? @db.VarChar(1)
+}
+
+model icms_contribuintes {
+  id                                        Int       @default(autoincrement()) @db.UnsignedInt
+  ie                                        String?   @db.VarChar(20)
+  razaosocial                               String?   @db.VarChar(255)
+  cnpj                                      String?   @db.VarChar(20)
+  cnae                                      String?   @db.VarChar(10)
+  idcidade                                  Int       @default(0) @db.UnsignedInt
+  datainicioatividade                       DateTime? @db.Date
+  acompanhamento_remover                    String?   @db.Char(1)
+  origemacompanhamento_remover              String?   @db.VarChar(10)
+  anoacompanhamento_remover                 Int?      @db.UnsignedInt
+  mesacompanhamento_remover                 Int?      @db.UnsignedInt
+  valoracompanhamento_remover               Decimal?  @db.Decimal(20, 2)
+  percentualacompanhamento_remover          Decimal?  @db.Decimal(6, 2)
+  percentualacumuladoacompanhamento_remover Decimal?  @db.Decimal(6, 2)
+  uf                                        String?   @db.VarChar(2)
+  endereco                                  String?   @db.VarChar(255)
+  cep                                       String?   @db.VarChar(10)
+  origem                                    String?   @db.VarChar(10)
+  receita                                   String?   @db.LongText
+  ativa_inativa                             String?   @db.VarChar(1)
+  uf_ant                                    String?   @db.VarChar(2)
+  cnae_ant                                  String?   @db.VarChar(10)
+  idcidade_ant                              Int?      @db.UnsignedInt
+  email                                     String?   @db.VarChar(255)
+  telefone                                  String?   @db.VarChar(45)
+  dataencerramentoatividade                 DateTime? @db.Date
+  datainicioatividade_ant                   DateTime? @db.Date
+  municipio                                 String?   @db.VarChar(100)
+  codigo_municipio_dipam                    String?   @db.VarChar(3)
+  regime                                    String?   @db.VarChar(1)
+  mesano_regime                             String?   @db.VarChar(6)
+  ano_importacao                            Int?
+  bairro                                    String?   @db.VarChar(50)
+
+  @@id([id, idcidade])
+}
+
+model icms_cota_parte {
+  id                           Int       @id @default(autoincrement()) @db.UnsignedInt
+  data                         DateTime? @db.Date
+  icms                         Decimal?  @db.Decimal(20, 2)
+  ipi                          Decimal?  @db.Decimal(20, 2)
+  royalties                    Decimal?  @db.Decimal(20, 2)
+  mes                          Int?      @db.UnsignedInt
+  ano                          Int?      @db.UnsignedInt
+  anoanterior                  String?   @db.Char(1)
+  total                        Decimal?  @db.Decimal(20, 2)
+  uf                           String?   @db.VarChar(2)
+  fpm                          Decimal?  @db.Decimal(20, 2)
+  ipva                         Decimal?  @db.Decimal(20, 2)
+  compensacaofinanceira        Decimal?  @db.Decimal(20, 2)
+  tipo                         String?   @db.VarChar(4)
+  idcidade                     Int?
+  previsao_realizado           String?   @db.VarChar(1)
+  divida_ativa                 Decimal?  @db.Decimal(20, 2)
+  divida_ativa_ipva            Decimal?  @db.Decimal(20, 2)
+  divida_ativa_ano_competencia Int?
+  ipi_estado                   Decimal?  @db.Decimal(20, 2)
+  royalties_estado             Decimal?  @db.Decimal(20, 2)
+  fep                          Decimal?  @db.Decimal(20, 2)
+  cide                         Decimal?  @db.Decimal(20, 2)
+  itr                          Decimal?  @db.Decimal(20, 2)
+  cfm                          Decimal?  @db.Decimal(20, 2)
+  fundeb                       Decimal?  @db.Decimal(20, 2)
+  fus                          Decimal?  @db.Decimal(20, 2)
+  bruto_liquido                String?   @db.VarChar(1)
+  mes_semana_decendio          String?   @db.VarChar(1)
+  excluido                     String?   @db.VarChar(1)
+  data_exclusao                DateTime? @db.Date
+  data_inclusao                DateTime? @db.Date
+  data_alteracao               DateTime? @db.Date
+  hora_exclusao                DateTime? @db.Time(0)
+  hora_inclusao                DateTime? @db.Time(0)
+  hora_alteracao               DateTime? @db.Time(0)
+  decendio                     String?   @db.VarChar(1)
+  cfh                          Decimal?  @db.Decimal(20, 2)
+  pea                          Decimal?  @db.Decimal(20, 2)
+  bap                          Decimal?  @db.Decimal(20, 2)
+  iso                          Decimal?  @db.Decimal(20, 2)
+  rpm                          Decimal?  @db.Decimal(20, 2)
+  ita                          Decimal?  @db.Decimal(20, 2)
+  digitado_importado           String?   @db.VarChar(1)
+  origem                       String?   @db.VarChar(50)
+  icms_provisorio_definitivo   String?   @db.VarChar(1)
+}
+
+model icms_dias_semana {
+  id     Int       @id @default(autoincrement()) @db.UnsignedInt
+  data   DateTime? @db.Date
+  semana Int?      @db.UnsignedInt
+  dia    String?   @db.Char(3)
+  ano    Int?      @db.UnsignedInt
+}
+
+model icms_efd {
+  id                    Int      @default(autoincrement()) @db.UnsignedInt
+  inscricaoestadual     String?  @db.VarChar(20)
+  cfop                  Int?     @db.UnsignedInt
+  valorcontabil         Decimal? @db.Decimal(20, 2)
+  mes                   Int?     @db.UnsignedInt
+  ano                   Int?     @db.UnsignedInt
+  idcidade              Int      @default(0) @db.UnsignedInt
+  origem                String?  @db.VarChar(15)
+  uf                    String?  @db.VarChar(2)
+  excluido              String?  @db.VarChar(1)
+  tipo                  String?  @db.VarChar(10)
+  item                  Int?     @db.UnsignedInt
+  provisorio_definitivo String?  @db.VarChar(1)
+  cnpj                  String?  @db.VarChar(20)
+
+  @@id([id, idcidade])
+  @@index([inscricaoestadual, ano, idcidade, id], map: "ie_ano_idcidade_id")
+  @@index([inscricaoestadual, cfop, ano, idcidade, id], map: "ie_cfop_ano_idcidade_id")
+}
+
+model icms_efd_deducao {
+  Id                    Int      @id @default(autoincrement())
+  inscricaoestadual     String?  @db.VarChar(20)
+  mes                   Int?
+  ano                   Int?
+  idcidade              Int?
+  valorcontabil         Decimal? @db.Decimal(20, 2)
+  uf                    String?  @db.VarChar(2)
+  provisorio_definitivo String?  @db.VarChar(1)
+  tipo                  String?  @db.VarChar(1)
+}
+
+model icms_efd_produtos {
+  Id                    Int      @id @default(autoincrement())
+  inscricaoestadual     String?  @db.VarChar(20)
+  cfop                  Int?
+  valorcontabil         Decimal? @db.Decimal(20, 2)
+  mes                   Int?
+  ano                   Int?
+  idcidade              Int?
+  origem                String?  @db.VarChar(15)
+  uf                    String?  @db.VarChar(2)
+  excluido              String?  @db.VarChar(1)
+  tipo                  String?  @db.VarChar(10)
+  item                  Int?
+  provisorio_definitivo String?  @db.VarChar(1)
+  cnpj                  String?  @db.VarChar(20)
+  produto               String?  @db.VarChar(255)
+  chaveacesso           String?  @db.VarChar(255)
+}
+
+model icms_estimativas {
+  Id             Int     @id @default(autoincrement())
+  uf             String? @db.VarChar(2)
+  municipio      String? @db.VarChar(100)
+  ano            Int?
+  populacao      Int?
+  municipio_ibge String? @db.VarChar(100)
+  codigo_ibge    String? @db.VarChar(10)
+}
+
+model icms_fpm {
+  Id          Int      @id @default(autoincrement())
+  idcidade    Int?
+  ano         Int?
+  coeficiente Decimal? @db.Decimal(10, 2)
+  uf          String?  @db.VarChar(2)
+}
+
+model icms_fpm_anexo1 {
+  Id          Int      @id @default(autoincrement())
+  ano         Int?
+  item        Int?
+  denominacao String?  @db.VarChar(255)
+  ir          Decimal? @db.Decimal(10, 2)
+  ipi         Decimal? @db.Decimal(10, 2)
+}
+
+model icms_fpm_anexo2 {
+  Id         Int      @id @default(autoincrement())
+  ano        Int?
+  perc_acima Decimal? @db.Decimal(10, 2)
+  perc_ate   Decimal? @db.Decimal(10, 2)
+  fator      Decimal? @db.Decimal(10, 2)
+}
+
+model icms_fpm_anexo3 {
+  Id         Int      @id @default(autoincrement())
+  ano        Int?
+  perc_acima Decimal? @db.Decimal(10, 4)
+  perc_ate   Decimal? @db.Decimal(10, 4)
+  fator      Decimal? @db.Decimal(10, 2)
+}
+
+model icms_fpm_anexo6 {
+  Id           Int      @id @default(autoincrement())
+  ano          Int?
+  uf           String?  @db.VarChar(2)
+  participacao Decimal? @db.Decimal(10, 4)
+}
+
+model icms_fpm_anexo7 {
+  Id         Int      @id @default(autoincrement())
+  populacao1 Int?
+  populacao2 Int?
+  fpm        Decimal? @db.Decimal(10, 2)
+  ano        Int?
+}
+
+model icms_fpm_irrf {
+  Id            Int       @id @default(autoincrement())
+  codigo_ibge   String?   @db.VarChar(20)
+  ano           Int?
+  mes           Int?
+  irrf          Decimal?  @db.Decimal(20, 2)
+  excluido      String?   @db.VarChar(1)
+  cidade        String?   @db.VarChar(40)
+  data_exclusao DateTime? @db.Date
+}
+
+model icms_fpm_municipios {
+  Id                     Int      @id @default(autoincrement())
+  uf                     String?  @db.VarChar(2)
+  municipio              String?  @db.VarChar(100)
+  ano                    Int?
+  municipio_ipm          String?  @db.VarChar(100)
+  populacao              Int?
+  cifpm_interior         Decimal? @db.Decimal(10, 2)
+  participacao           Decimal? @db.Decimal(20, 8)
+  codigo_ibge            String?  @db.VarChar(10)
+  tipo                   String?  @db.VarChar(20)
+  fator_populacao        Decimal? @db.Decimal(10, 2)
+  renda_per_capita       Int?
+  fator_renda_per_capita Decimal? @db.Decimal(10, 2)
+  ano_ibge               Int?
+  ano_renda_per_capita   Int?
+  m1                     String?  @db.VarChar(1)
+  m2                     String?  @db.VarChar(1)
+  m3                     String?  @db.VarChar(1)
+  m4                     String?  @db.VarChar(1)
+  m5                     String?  @db.VarChar(1)
+  m6                     String?  @db.VarChar(1)
+  m7                     String?  @db.VarChar(1)
+  m8                     String?  @db.VarChar(1)
+  m9                     String?  @db.VarChar(1)
+  m10                    String?  @db.VarChar(1)
+  m11                    String?  @db.VarChar(1)
+  m12                    String?  @db.VarChar(1)
+}
+
+model icms_fpm_municipios1 {
+  Id                     Int      @id @default(autoincrement())
+  uf                     String?  @db.VarChar(2)
+  municipio              String?  @db.VarChar(100)
+  ano                    Int?
+  mes                    Int?
+  municipio_ipm          String?  @db.VarChar(100)
+  populacao              Int?
+  cifpm_interior         Decimal? @db.Decimal(10, 2)
+  participacao           Decimal? @db.Decimal(20, 8)
+  codigo_ibge            String?  @db.VarChar(10)
+  tipo                   String?  @db.VarChar(20)
+  fator_populacao        Decimal? @db.Decimal(10, 2)
+  renda_per_capita       Int?
+  fator_renda_per_capita Decimal? @db.Decimal(10, 2)
+  ano_ibge               Int?
+  ano_renda_per_capita   Int?
+}
+
+model icms_fpm_renda_per_capita_pais {
+  Id               Int      @id @default(autoincrement())
+  ano              Int?
+  renda_per_capita Decimal? @db.Decimal(20, 2)
+}
+
+model icms_fundeb_coeficientes_valores {
+  Id                    Int      @id @default(autoincrement())
+  codigo_ibge           String?  @db.VarChar(10)
+  ano                   Int?
+  complementacao_vaat   Decimal? @db.Decimal(20, 2)
+  complementacao_vaar   Decimal? @db.Decimal(20, 2)
+  uf                    String?  @db.VarChar(2)
+  complementacao_vaaf   Decimal? @db.Decimal(20, 2)
+  receita_vaaf          Decimal? @db.Decimal(20, 2)
+  coeficiente_vaaf      Decimal? @db.Decimal(20, 12)
+  coeficiente_vaar      Decimal? @db.Decimal(20, 12)
+  matriculas            Decimal? @db.Decimal(20, 2)
+  matriculas_ponderadas Decimal? @db.Decimal(20, 2)
+}
+
+model icms_fundeb_custo_aluno {
+  Id        Int      @id @default(autoincrement())
+  ano       Int?
+  valor     Decimal? @db.Decimal(20, 2)
+  uf        String?  @db.VarChar(2)
+  descricao String?  @db.VarChar(255)
+}
+
+model icms_fundeb_matriculas {
+  Id                        Int      @id @default(autoincrement())
+  codigo_ibge               String?  @db.VarChar(20)
+  ano                       Int?
+  valor                     Decimal? @db.Decimal(20, 2)
+  uf                        String?  @db.VarChar(2)
+  municipio                 String?  @db.VarChar(100)
+  descricao                 String?  @db.VarChar(255)
+  fator_ponderacao          Decimal? @db.Decimal(10, 2)
+  valor_ponderado           Decimal? @db.Decimal(20, 2)
+  idicms_fundeb_tipo_ensino Int?
+}
+
+model icms_fundeb_tipo_ensino {
+  Id          Int     @id @default(autoincrement())
+  descricao   String? @db.VarChar(255)
+  tipo        String? @db.VarChar(10)
+  tipo_ensino String? @db.VarChar(50)
+}
+
+model icms_fundeb_valor_remover {
+  Id       Int      @id @default(autoincrement())
+  uf       String?  @db.VarChar(2)
+  impostos Decimal? @db.Decimal(20, 2)
+  vaaf     Decimal? @db.Decimal(20, 2)
+  vaat     Decimal? @db.Decimal(20, 2)
+  vaar     Decimal? @db.Decimal(20, 2)
+  ano      Int?
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model icms_gia_entregas {
+  id                    Int     @default(autoincrement()) @db.UnsignedInt
+  ie                    String? @db.VarChar(20)
+  ano                   Int?    @db.UnsignedInt
+  janeiro               String? @db.Char(2)
+  fevereiro             String? @db.Char(2)
+  marco                 String? @db.Char(2)
+  abril                 String? @db.Char(2)
+  maio                  String? @db.Char(2)
+  junho                 String? @db.Char(2)
+  julho                 String? @db.Char(2)
+  agosto                String? @db.Char(2)
+  setembro              String? @db.Char(2)
+  outubro               String? @db.Char(2)
+  novembro              String? @db.Char(2)
+  dezembro              String? @db.Char(2)
+  idcidade              Int     @default(0) @db.UnsignedInt
+  uf                    String? @db.VarChar(2)
+  provisorio_definitivo String? @db.VarChar(1)
+  meses_omissos         String? @db.VarChar(255)
+
+  @@id([id, idcidade])
+}
+
+model icms_ibge {
+  Id             Int     @id @default(autoincrement())
+  uf             String? @db.VarChar(2)
+  municipio      String? @db.VarChar(100)
+  ano            Int?
+  populacao      Int?
+  municipio_ibge String? @db.VarChar(100)
+  codigo_ibge    String? @db.VarChar(10)
+}
+
+model icms_ideb {
+  Id                     Int      @id @default(autoincrement())
+  ano                    Int?
+  uf                     String?  @db.VarChar(2)
+  codigo_ibge            String?  @db.VarChar(10)
+  rede                   String?  @db.VarChar(20)
+  taxa_aprovacao_1_5     Decimal? @db.Decimal(20, 2)
+  taxa_aprovacao_1       Decimal? @db.Decimal(20, 2)
+  taxa_aprovacao_2       Decimal? @db.Decimal(20, 2)
+  taxa_aprovacao_3       Decimal? @db.Decimal(20, 2)
+  taxa_aprovacao_4       Decimal? @db.Decimal(20, 2)
+  taxa_aprovacao_5       Decimal? @db.Decimal(20, 2)
+  indicador_rendimento   Decimal? @db.Decimal(20, 2)
+  nota_saeb_mat          Decimal? @db.Decimal(20, 2)
+  nota_saeb_lp           Decimal? @db.Decimal(20, 2)
+  nota_media_padronizada Decimal? @db.Decimal(20, 2)
+  ideb                   Decimal? @db.Decimal(20, 2)
+}
+
+model icms_idh {
+  Id               Int      @id @default(autoincrement())
+  uf               String?  @db.VarChar(2)
+  municipio        String?  @db.VarChar(100)
+  ano              Int?
+  idh              Decimal? @db.Decimal(10, 4)
+  idh_renda        Decimal? @db.Decimal(10, 4)
+  idh_longevidade  Decimal? @db.Decimal(10, 4)
+  idh_educacao     Decimal? @db.Decimal(10, 4)
+  municipio_idh    String?  @db.VarChar(100)
+  codigo_ibge      String?  @db.VarChar(10)
+  prefeito         String?  @db.VarChar(100)
+  area_territorial Decimal? @db.Decimal(20, 3)
+  populacao        Decimal? @db.Decimal(20, 0)
+  densidade        Decimal? @db.Decimal(20, 2)
+  escolarizacao    Decimal? @db.Decimal(20, 1)
+  mortalidade      Decimal? @db.Decimal(20, 2)
+  receitas         Decimal? @db.Decimal(20, 2)
+  despesas         Decimal? @db.Decimal(20, 2)
+  pib_per_capita   Decimal? @db.Decimal(20, 2)
+}
+
+model icms_integracao_municipios {
+  Id               Int     @id @default(autoincrement())
+  municipio        String? @db.VarChar(100)
+  uf               String? @db.VarChar(2)
+  municipio_errado String? @db.VarChar(255)
+}
+
+model icms_ipm {
+  id                         Int      @id @default(autoincrement()) @db.UnsignedInt
+  uf                         String?  @db.VarChar(2)
+  municipio                  String?  @db.VarChar(100)
+  rn_valoradicionado         Decimal? @db.Decimal(20, 2)
+  rn_indice_valor            Decimal? @db.Decimal(12, 8)
+  rn_territorio              Int?     @db.UnsignedInt
+  rn_territorio_indice       Decimal? @db.Decimal(12, 8)
+  rn_populacao               Int?     @db.UnsignedInt
+  rn_populacao_indice        Decimal? @db.Decimal(12, 8)
+  rn_indice_fixo             Decimal? @db.Decimal(12, 8)
+  rn_indice_geral            Decimal? @db.Decimal(12, 8)
+  provisorio_definitivo      String?  @db.VarChar(1)
+  ano                        Int?     @db.UnsignedInt
+  idicms_cidades             Int?     @db.UnsignedInt
+  rn_receita_tributaria      Decimal? @db.Decimal(20, 2)
+  rn_area_cultivada          Decimal? @db.Decimal(20, 2)
+  rn_area_inundada           Decimal? @db.Decimal(20, 8)
+  rn_area_protegida_indice   Decimal? @db.Decimal(16, 8)
+  rn_vaanoanterior           Decimal? @db.Decimal(20, 2)
+  rn_vaanoanterior_indice    Decimal? @db.Decimal(12, 8)
+  rn_vaanoatual              Decimal? @db.Decimal(20, 2)
+  rn_vaanoatual_indice       Decimal? @db.Decimal(12, 8)
+  rn_verde                   Decimal? @db.Decimal(10, 4)
+  rn_verde_indice            Decimal? @db.Decimal(12, 8)
+  rn_ideal                   Decimal? @db.Decimal(20, 2)
+  rn_ideal_indice            Decimal? @db.Decimal(12, 8)
+  codigo_ibge                String?  @db.VarChar(10)
+  rn_indice_geral_ant        Decimal? @db.Decimal(12, 4)
+  rn_residuos_solidos_indice Decimal? @db.Decimal(12, 8)
+  rn_preliminar_indice       Decimal? @db.Decimal(12, 8)
+  rn_ajuste_indice           Decimal? @db.Decimal(12, 8)
+  rn_ideal_10                Decimal? @db.Decimal(12, 8)
+}
+
+model icms_ipm_excecoes {
+  Id       Int      @id @default(autoincrement())
+  idcidade Int?
+  ipm      Decimal? @db.Decimal(20, 8)
+  mes      Int?
+  ano      Int?
+  semana   Int?
+}
+
+model icms_ipmx {
+  id                                        Int      @id @default(autoincrement()) @db.UnsignedInt
+  uf                                        String?  @db.VarChar(2)
+  municipio                                 String?  @db.VarChar(100)
+  rn_valoradicionado                        Decimal? @db.Decimal(20, 2)
+  rn_indice_valor                           Decimal? @db.Decimal(12, 4)
+  rn_territorio                             Int?     @db.UnsignedInt
+  rn_territorio_indice                      Decimal? @db.Decimal(12, 4)
+  rn_populacao                              Int?     @db.UnsignedInt
+  rn_populacao_indice                       Decimal? @db.Decimal(12, 4)
+  rn_indice_fixo                            Decimal? @db.Decimal(12, 4)
+  rn_indice_geral                           Decimal? @db.Decimal(12, 8)
+  provisorio_definitivo                     String?  @db.VarChar(1)
+  ano                                       Int?     @db.UnsignedInt
+  idicms_cidades                            Int?     @db.UnsignedInt
+  sp_valoradicionado_remover                Decimal? @db.Decimal(20, 2)
+  sp_populacao_remover                      Int?     @db.UnsignedInt
+  sp_receitatributariapropria_remover       Decimal? @db.Decimal(20, 2)
+  sp_areacultivada_remover                  Decimal? @db.Decimal(12, 2)
+  sp_areainundada_remover                   Decimal? @db.Decimal(12, 2)
+  sp_areaprotegida_indice_remover           Decimal? @db.Decimal(16, 6)
+  sp_indicepercentualdeparticipacao_remover Decimal? @db.Decimal(16, 8)
+  rn_vaanoanterior                          Decimal? @db.Decimal(20, 2)
+  rn_vaanoanterior_indice                   Decimal? @db.Decimal(12, 4)
+  rn_vaanoatual                             Decimal? @db.Decimal(20, 2)
+  rn_vaanoatual_indice                      Decimal? @db.Decimal(12, 4)
+  al_vamedio_indice_remover                 Decimal? @db.Decimal(20, 4)
+  al_populacao_remover                      Int?     @db.UnsignedInt
+  al_populacao_indice_remover               Decimal? @db.Decimal(12, 4)
+  al_territorio_remover                     Decimal? @db.Decimal(10, 3)
+  al_territorio_indice_remover              Decimal? @db.Decimal(12, 4)
+  rn_verde                                  Decimal? @db.Decimal(10, 4)
+  rn_verde_indice                           Decimal? @db.Decimal(12, 4)
+  rn_ideal                                  Decimal? @db.Decimal(20, 2)
+  rn_ideal_indice                           Decimal? @db.Decimal(12, 4)
+  al_indice_fixo_remover                    Decimal? @db.Decimal(12, 4)
+  codigo_ibge                               String?  @db.VarChar(10)
+}
+
+model icms_irrf_contribuintes {
+  Id                   Int       @id @default(autoincrement())
+  cnpj                 String?   @db.VarChar(20)
+  razaosocial          String?   @db.VarChar(255)
+  data_simples         String?   @db.VarChar(10)
+  cnae                 String?   @db.VarChar(10)
+  situacao             String?   @db.VarChar(10)
+  ano                  Int?
+  ano_pesquisa_simples Int?
+  idcidade             Int?
+  data_pesquisa_cnae   DateTime? @db.Date
+  receita              String?   @db.LongText
+}
+
+model icms_irrf_pagamentos {
+  Id                           Int       @id @default(autoincrement())
+  exercicio                    Int?
+  mes_pagamento                Int?
+  data_pagamento               DateTime? @db.Date
+  codigo_orgao                 String?   @db.VarChar(20)
+  codigo_unidade               String?   @db.VarChar(20)
+  unidade                      String?   @db.VarChar(100)
+  numero_pagamento             String?   @db.VarChar(20)
+  numero_contrato              String?   @db.VarChar(20)
+  numero_processo              String?   @db.VarChar(20)
+  numero_processo_exercicio    Int?
+  numero_empenho               String?   @db.VarChar(20)
+  exercicio_empenho            Int?
+  numero_liquidacao_empresa    String?   @db.VarChar(20)
+  exercicio_liquidacao_empresa Int?
+  cnpj                         String?   @db.VarChar(20)
+  numero_doc_fiscal            String?   @db.VarChar(20)
+  tipo_documento_fiscal        String?   @db.VarChar(100)
+  autenticacao                 String?   @db.VarChar(20)
+  emissao_nf                   DateTime? @db.Date
+  valorliquido                 Decimal?  @db.Decimal(20, 2)
+  valorbruto                   Decimal?  @db.Decimal(20, 2)
+  valorir                      Decimal?  @db.Decimal(20, 2)
+  objeto                       String?   @db.VarChar(255)
+  natureza_despesa             String?   @db.VarChar(100)
+  idcidade                     Int?
+  razaosocial                  String?   @db.VarChar(255)
+}
+
+model icms_log {
+  Id             Int       @id @default(autoincrement())
+  descricao      String?   @db.VarChar(255)
+  idusuarios     Int?
+  idicms_cidades Int?
+  data           DateTime? @db.Date
+  hora           String?   @db.VarChar(255)
+  strpesquisa    String?   @db.VarChar(255)
+}
+
+model icms_modelos_oficios {
+  Id          Int     @id @default(autoincrement())
+  modelo      Int?
+  razaosocial String? @db.VarChar(255)
+  motivo      String? @db.VarChar(255)
+  arquivo     String? @db.VarChar(255)
+}
+
+model icms_movimentos_gia {
+  id                      Int      @default(autoincrement()) @db.UnsignedInt
+  inscricaoestadual       String?  @db.VarChar(20)
+  cfop                    Int?     @db.UnsignedInt
+  valorcontabil           Decimal? @db.Decimal(20, 2)
+  valoradicionado_remover Decimal? @db.Decimal(20, 2)
+  basecalculo             Decimal? @db.Decimal(20, 2)
+  isentasnaotrib          Decimal? @db.Decimal(20, 2)
+  outras                  Decimal? @db.Decimal(20, 2)
+  mes                     Int?     @db.UnsignedInt
+  ano                     Int?     @db.UnsignedInt
+  idcidade                Int      @default(0) @db.UnsignedInt
+  origem                  String?  @db.VarChar(15)
+  idcidadedipam           Int?     @db.UnsignedInt
+  codigodipam             String?  @db.VarChar(5)
+  estoque_inicial         Decimal? @db.Decimal(20, 2)
+  estoque_final           Decimal? @db.Decimal(20, 2)
+  uf                      String?  @db.VarChar(2)
+  cnpj                    String?  @db.VarChar(20)
+  excluido                String?  @db.VarChar(1)
+  basecalculosubst        Decimal? @db.Decimal(20, 2)
+  icms                    Decimal? @db.Decimal(20, 2)
+  icmssubst               Decimal? @db.Decimal(20, 2)
+  tipo                    String?  @db.VarChar(10)
+  item                    Int?     @db.UnsignedInt
+
+  @@id([id, idcidade])
+}
+
+model icms_ocorrencias {
+  id                          Int       @default(autoincrement()) @db.UnsignedInt
+  idcidade                    Int       @db.UnsignedInt
+  ocorrencia                  Int?      @db.UnsignedInt
+  razaosocial                 String?   @db.VarChar(255)
+  ie                          String?   @db.VarChar(20)
+  cnpj                        String?   @db.VarChar(20)
+  valoradicionado             Decimal?  @db.Decimal(20, 2)
+  datainicio                  DateTime? @db.Date
+  dataencerramento            DateTime? @db.Date
+  situacao_remover            String?   @db.VarChar(40)
+  motivo                      String?   @db.VarChar(255)
+  excluido                    String?   @db.VarChar(1)
+  data_oficio                 String?   @db.VarChar(50)
+  documento_oficio            String?   @db.VarChar(50)
+  documento_impugnacao        String?   @db.VarChar(50)
+  data_impugnacao             String?   @db.VarChar(50)
+  valoradicionado_anoanterior Decimal?  @db.Decimal(20, 2)
+  situacao                    String?   @db.VarChar(1)
+  ano                         Int?
+  impugnacao_reg1400          String?   @db.VarChar(1)
+  anobase                     Int?
+
+  @@id([id, idcidade])
+}
+
+model icms_ocorrencias_fpm {
+  Id                   Int       @id @default(autoincrement())
+  idcidade             Int?
+  ocorrencia           Int?
+  datainicio           DateTime? @db.Date
+  dataencerramento     DateTime? @db.Date
+  motivo               String?   @db.VarChar(255)
+  excluido             String?   @db.VarChar(1)
+  data_oficio          String?   @db.VarChar(50)
+  documento_oficio     String?   @db.VarChar(50)
+  documento_impugnacao String?   @db.VarChar(50)
+  data_impugnacao      String?   @db.VarChar(50)
+  situacao             String?   @db.VarChar(1)
+  ano                  Int?
+  impugnacao_reg1400   String?   @db.VarChar(1)
+  anobase              Int?
+}
+
+model icms_pib {
+  Id                                            Int      @id @default(autoincrement())
+  uf                                            String?  @db.VarChar(2)
+  municipio                                     String?  @db.VarChar(100)
+  ano                                           Int?
+  pib                                           Decimal? @db.Decimal(20, 2)
+  pib_per_capita                                Decimal? @db.Decimal(20, 2)
+  municipio_ibge                                String?  @db.VarChar(100)
+  codigo_ibge                                   String?  @db.VarChar(10)
+  regiao_metropolitana                          String?  @db.VarChar(100)
+  va_bruto_agropecuaria                         Decimal? @db.Decimal(20, 2)
+  va_bruto_industria                            Decimal? @db.Decimal(20, 2)
+  va_bruto_servicos_exceto_adm_def_educ_sp_seg  Decimal? @db.Decimal(20, 2)
+  va_bruto_adm_def_educ_sp_seg                  Decimal? @db.Decimal(20, 2)
+  va_bruto_total                                Decimal? @db.Decimal(20, 2)
+  impostos_liquidos_de_subsidios_sobre_produtos Decimal? @db.Decimal(20, 2)
+  atividadade_com_maior_va_bruto                String?  @db.VarChar(100)
+  atividade_com_segundo_maior_va_bruto          String?  @db.VarChar(100)
+  atividade_com_terceiro_maior_va_bruto         String?  @db.VarChar(100)
+}
+
+model icms_regioes {
+  id        Int     @default(autoincrement()) @db.UnsignedInt
+  descricao String? @db.VarChar(50)
+  uf        String  @default("") @db.VarChar(2)
+
+  @@id([id, uf])
+}
+
+model icms_regioes_cidades {
+  id          Int     @default(autoincrement()) @db.UnsignedInt
+  idregioes   Int?    @default(0) @db.UnsignedInt
+  uf          String  @default("0") @db.VarChar(2)
+  municipio   String  @default("0") @db.VarChar(100)
+  codigo_ibge String? @db.VarChar(10)
+
+  @@id([id, uf])
+}
+
+model icms_repasses {
+  Id                           Int       @id @default(autoincrement())
+  data                         DateTime? @db.Date
+  mes                          Int?
+  ano                          Int?
+  anoanterior                  String?   @db.VarChar(1)
+  uf                           String?   @db.VarChar(2)
+  tipo                         String?   @db.VarChar(4)
+  idcidade                     Int?
+  previsao_realizado           String?   @db.VarChar(1)
+  divida_ativa_ano_competencia Int?
+  bruto_liquido                String?   @db.VarChar(1)
+  mes_semana_decendio          String?   @db.VarChar(1)
+  excluido                     String?   @db.VarChar(1)
+  data_exclusao                DateTime? @db.Date
+  data_inclusao                DateTime? @db.Date
+  data_alteracao               DateTime? @db.Date
+  hora_exclusao                DateTime? @db.Time(0)
+  hora_inclusao                DateTime? @db.Time(0)
+  hora_alteracao               DateTime? @db.Time(0)
+  decendio                     String?   @db.VarChar(1)
+  digitado_importado           String?   @db.VarChar(1)
+  valor                        Decimal?  @db.Decimal(20, 2)
+  sigla                        String?   @db.VarChar(10)
+}
+
+model icms_retencao {
+  Id           Int      @id @default(autoincrement())
+  mes          Int?
+  ano          Int?
+  uf           String?  @db.VarChar(2)
+  idcidade     Int?
+  valor_saude  Decimal? @db.Decimal(20, 2)
+  valor_fundeb Decimal? @db.Decimal(20, 2)
+}
+
+model icms_selic {
+  Id                   Int       @id @default(autoincrement())
+  mes_inicial          Int?
+  ano_inicial          Int?
+  selic                Decimal?  @db.Decimal(20, 14)
+  data_inicial         DateTime? @db.Date
+  data_final           DateTime? @db.Date
+  mes_final            Int?
+  ano_final            Int?
+  efdxsimples_nacional String?   @db.VarChar(1)
+  efd_apuradasxomissos String?   @db.VarChar(1)
+}
+
+model icms_tabelas {
+  Id        Int     @id @default(autoincrement())
+  tabela    String? @db.VarChar(255)
+  descricao String? @db.VarChar(255)
+}
+
+model icms_transferencias {
+  Id         Int     @id @default(autoincrement())
+  sigla      String? @db.VarChar(10)
+  descricao  String? @db.VarChar(255)
+  importa_bb String? @db.VarChar(1)
+  excluido   String? @db.VarChar(1)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model icms_uf {
+  uf                              String? @db.VarChar(2)
+  descricao                       String? @db.VarChar(255)
+  vafprovxvafdef_por_contribuinte String? @db.VarChar(1)
+
+  @@ignore
+}
+
+model icms_usuarios {
+  Id            Int       @id @default(autoincrement())
+  login         String?   @db.VarChar(20)
+  senha_md5     String?   @db.VarChar(32)
+  excluido      String?   @db.VarChar(1)
+  data_exclusao DateTime? @db.Date
+  hora_exclusao DateTime? @db.Time(0)
+  data_inclusao DateTime? @db.Date
+  hora_inclusao DateTime? @db.Time(0)
+}
+
+model icms_usuarios_cidades {
+  Id             Int     @id @default(autoincrement())
+  idusuarios     Int?
+  idicms_cidades Int?
+  codigo_ibge    String? @db.VarChar(10)
+}
+
+model icms_usuarios_permissoes {
+  Id         Int     @id @default(autoincrement())
+  idusuarios Int?
+  componente String? @db.VarChar(20)
+  permissao  String? @db.VarChar(1)
+}
+
+model icms_valor_adicionado {
+  id                      Int      @default(autoincrement()) @db.UnsignedInt
+  idcidade                Int      @default(0) @db.UnsignedInt
+  ie                      String?  @db.VarChar(20)
+  valoradicionado         Decimal? @db.Decimal(20, 2)
+  ano                     Int?     @db.UnsignedInt
+  valoradicionadonegativo Decimal? @db.Decimal(20, 2)
+  valoradicionadopositivo Decimal? @db.Decimal(20, 2)
+  entradas_remover        Decimal? @db.Decimal(20, 2)
+  saidas_remover          Decimal? @db.Decimal(20, 2)
+  uf                      String?  @db.VarChar(2)
+  origem                  String?  @db.VarChar(10)
+  cnpj                    String?  @db.VarChar(20)
+  provisorio_definitivo   String?  @db.VarChar(1)
+  protocolo               String?  @db.VarChar(50)
+  codigo_documento        String?  @db.VarChar(10)
+
+  @@id([id, idcidade])
+}
+
+model icms_veiculos {
+  Id              Int     @id @default(autoincrement())
+  uf              String? @db.VarChar(2)
+  municipio       String? @db.VarChar(100)
+  ano             Int?
+  automovel       Int?
+  bonde           Int?
+  caminhao        Int?
+  caminhao_trator Int?
+  caminhonete     Int?
+  camioneta       Int?
+  chassi_plataf   Int?
+  ciclomotor      Int?
+  microonibus     Int?
+  motocicleta     Int?
+  motoneta        Int?
+  onibus          Int?
+  quadriciclo     Int?
+  reboque         Int?
+  semi_reboque    Int?
+  side_car        Int?
+  outros          Int?
+  trator_estei    Int?
+  trator_rodas    Int?
+  triciclo        Int?
+  utilitario      Int?
+  total           Int?
+  idcidade        String? @db.VarChar(255)
+}
+
+model icms_veiculos_ipva_arrecadacao {
+  Id              Int       @id @default(autoincrement())
+  placa           String?   @db.VarChar(20)
+  sequencia       String?   @db.VarChar(20)
+  exercicio       Int?
+  parcela         Int?
+  data_vencimento DateTime? @db.Date
+  valor_original  Decimal?  @db.Decimal(20, 2)
+  data_pagamento  DateTime? @db.Date
+  valor_recolhido Decimal?  @db.Decimal(20, 2)
+  juros_mora      Decimal?  @db.Decimal(20, 2)
+  multa_mora      Decimal?  @db.Decimal(20, 2)
+  tipo_ipva       String?   @db.VarChar(20)
+  idcidade        Int?
+  ano_arrecadacao Int?
+  ano_vencimento  Int?
+}
+
+model icms_veiculos_ipva_arrecadacao_resumo_remover {
+  Id              Int      @id @default(autoincrement())
+  idcidade        Int?
+  ano             Int?
+  mes             Int?
+  qtde_pagamentos Int?
+  valor_recolhido Decimal? @db.Decimal(20, 2)
+}
+
+model icms_veiculos_ipva_lancamentos {
+  Id            Int      @id @default(autoincrement())
+  placa         String?  @db.VarChar(20)
+  sequencia     String?  @db.VarChar(20)
+  exercicio     Int?
+  valor_lancado Decimal? @db.Decimal(20, 2)
+  isento        String?  @db.VarChar(10)
+  idcidade      Int?
+}
+
+model icms_veiculos_ipva_lancamentos_resumo_remover {
+  Id           Int      @id @default(autoincrement())
+  idcidade     Int?
+  exercicio    Int?
+  ipva_lancado Decimal? @db.Decimal(20, 2)
+}
+
+model icms_veiculos_municipio {
+  Id              Int       @id @default(autoincrement())
+  idcidade        Int?
+  placa           String?   @db.VarChar(20)
+  sequencia       String?   @db.VarChar(20)
+  marca_codigo    String?   @db.VarChar(20)
+  marca           String?   @db.VarChar(100)
+  tipo            String?   @db.VarChar(100)
+  categoria       String?   @db.VarChar(50)
+  especie         String?   @db.VarChar(50)
+  ano_fabricacao  Int?
+  ano_modelo      Int?
+  municipio_atual String?   @db.VarChar(50)
+  data_baixa      DateTime? @db.Date
+  ano_baixa       Int?
+}
+
+model icms_veiculos_senatran {
+  Id         Int     @id @default(autoincrement())
+  uf         String? @db.VarChar(2)
+  idcidade   Int?
+  tipo       String? @db.VarChar(50)
+  quantidade Int?
+  exercicio  Int?
+}
+
+model usuarios {
+  id                Int     @default(autoincrement()) @db.UnsignedInt
+  nome              String? @db.VarChar(40)
+  idcidade          Int     @default(0) @db.UnsignedInt
+  excluido          String? @db.VarChar(1)
+  abreviado         String? @db.VarChar(20)
+  senha             String? @db.VarChar(20)
+  permissoes        String? @db.LongText
+  senha_md5         String? @db.VarChar(32)
+  uf                String? @db.VarChar(2)
+  permissoes_icms   String? @db.LongText
+  acesso_total_icms String? @db.VarChar(1)
+  codigo_ibge       String? @db.VarChar(10)
+  administrador     String? @db.VarChar(1)
+
+  @@id([id, idcidade])
+}
+
+model sgw_Usuarios {
+  id        Int      @id @default(autoincrement())
+  name      String
+  cpf       String   @unique
+  email     String   @unique
+  phone     String
+  password  String
+  role      Role
+  city      String?
+  state     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  DEV
+  CLIENT
+}
+
